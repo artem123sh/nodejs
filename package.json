@@ -1,0 +1,27 @@
+{
+  "name": "nodejs_mentoring_programm",
+  "version": "1.0.0",
+  "description": "node js mentoring programm",
+  "scripts": {
+    "task1": "nodemon --exec babel-node ./src/task1.js",
+    "task2": "nodemon --exec babel-node ./src/task2.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/artem123sh/nodejs"
+  },
+  "author": "artem shestakov",
+  "license": "ISC",
+  "dependencies": {
+    "csvtojson": "^2.0.10"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.5",
+    "@babel/node": "^7.10.5",
+    "@babel/preset-env": "^7.10.4",
+    "eslint": "^7.5.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "nodemon": "^2.0.4"
+  }
+}
