@@ -4,15 +4,23 @@ import csvtojson from 'csvtojson';
 import { Readable, Transform, pipeline } from 'stream';
 import readline from 'readline';
 
-const convertCsvToJson = (inputFile, outputFile) => fsPromises.readFile(inputFile, 'utf-8')
-  .then((fileContent) => csvtojson().fromString(fileContent))
-  .then((json) => {
-    const stringifiedData = json.reduce((str, obj) => `${str + JSON.stringify(obj)}\n`, '');
-    return fsPromises.writeFile(outputFile, stringifiedData, 'utf-8');
+const columns = /Book|Author|Price/;
+
+const transformParsedBook = (parsedBook) => Object.entries(parsedBook)
+  .reduce((result, [key, value]) => Object.assign(result, { [key.toLowerCase()]: value }), {});
+
+export const convertCsvToJson = (inputFile, outputFile) => fsPromises.readFile(inputFile, 'utf-8')
+  .then((fileContent) => csvtojson(
+    { checkType: true, includeColumns: columns },
+  ).fromString(fileContent))
+  .then((parsedBooks) => {
+    const books = parsedBooks.map((parsedBook) => transformParsedBook(parsedBook));
+    const stringifiedBook = books.reduce((str, book) => `${str + JSON.stringify(book)}\n`, '');
+    return fsPromises.writeFile(outputFile, stringifiedBook, 'utf-8');
   })
   .catch((error) => console.error(error));
 
-const streamifyCsvToJson = (inputFile, outputFile) => {
+export const streamifyCsvToJson = (inputFile, outputFile) => {
   const rl = readline.createInterface({ input: createReadStream(inputFile) });
 
   /* eslint no-underscore-dangle: 0 */
@@ -31,10 +39,27 @@ const streamifyCsvToJson = (inputFile, outputFile) => {
     },
   });
 
+  const bookTransform = new Transform({
+    transform(parsedBook, encoding, callback) {
+      if (this._last === undefined) {
+        this._last = '';
+      }
+      const book = transformParsedBook(JSON.parse(parsedBook.toString()));
+      this._last += `${JSON.stringify(book)}\n`;
+      callback();
+    },
+
+    flush(callback) {
+      if (this._last) { this.push(this._last); }
+      callback();
+    },
+  });
+
   pipeline(
     Readable.from(rl),
     appendNewLineTransform,
-    csvtojson(),
+    csvtojson({ checkType: true, includeColumns: columns }),
+    bookTransform,
     createWriteStream(outputFile),
     (error) => {
       if (error) {
