@@ -11,7 +11,7 @@ export default class UserController {
                 res.sendStatus(404);
             }
         } catch (e) {
-            return next({ error:e });
+            return next(e);
         }
     }
 
@@ -28,18 +28,22 @@ export default class UserController {
             }
             res.json(users);
         } catch (e) {
-            return next({ error:e });
+            return next(e);
         }
     }
 
     async addUser(req, res, next) {
         try {
             const unique = !storage.getItems().some(({ login }) => login === req.body.login);
-            Joi.boolean().equal(true).validate(false);
-            Joi.assert(unique,  Joi.boolean().equal(true), `Login "${req.body.login}" uniqueness`, { errors: { label: false } });
+            try {
+                Joi.boolean().equal(true).validate(false);
+                Joi.assert(unique,  Joi.boolean().equal(true), `Login "${req.body.login}" uniqueness`, { errors: { label: false } });
+            } catch (e) {
+                return next({ error:e });
+            }
             res.json(storage.addItem(req.body));
         } catch (e) {
-            return next({ error:e });
+            return next(e);
         }
     }
 
@@ -52,7 +56,7 @@ export default class UserController {
                 res.sendStatus(404);
             }
         } catch (e) {
-            return next({ error:e });
+            return next(e);
         }
     }
 
@@ -65,7 +69,7 @@ export default class UserController {
                 res.sendStatus(404);
             }
         } catch (e) {
-            return next({ error:e });
+            return next(e);
         }
     }
 }
