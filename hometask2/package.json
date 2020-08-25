@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "start": "nodemon --exec babel-node ./src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "eslint": "eslint */**/*.{js} --quiet --fix"
   },
   "keywords": [],
   "author": "",
@@ -14,7 +15,7 @@
     "@hapi/joi": "^17.1.1",
     "compression": "^1.7.4",
     "express": "^4.17.1",
-    "express-joi-validation": "^4.0.4-beta.0",
+    "express-joi-validation": "^4.0.3",
     "joi-extract-type": "^15.0.8",
     "uuid": "^8.3.0"
   },
