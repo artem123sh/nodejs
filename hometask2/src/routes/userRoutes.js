@@ -14,10 +14,13 @@ export default class UserRoutes {
   }
 
   routes() {
-      this.router.get('/', this.validator.query(getUsersQueryParamsSchema), this.userController.getUsers);
-      this.router.post('/', this.validator.body(userSchema),  this.userController.addUser);
-      this.router.get('/:id', this.validator.params(userIdSchema), this.userController.getUser);
-      this.router.put('/:id', this.validator.params(userIdSchema), this.validator.body(userSchema),  this.userController.updateUser);
-      this.router.delete('/:id', this.validator.params(userIdSchema), this.userController.deleteUser);
+      this.router
+        .get('/', this.validator.query(getUsersQueryParamsSchema), this.userController.getUsers)
+        .post('/', this.validator.body(userSchema),  this.userController.addUser);
+
+      this.router
+        .get('/:id', this.validator.params(userIdSchema), this.userController.getUser)
+        .put('/:id', this.validator.params(userIdSchema), this.validator.body(userSchema),  this.userController.updateUser)
+        .delete('/:id', this.validator.params(userIdSchema), this.userController.deleteUser);
   }
 }
