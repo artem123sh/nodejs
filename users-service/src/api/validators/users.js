@@ -4,7 +4,7 @@ export const userSchema = Joi.object({
     login: Joi.string().alphanum().min(3).max(255).required(),
     password: Joi.string().pattern(new RegExp('(?=.*[a-zA-Z])(?=.*[0-9])'), { name: 'letters and numbers' }).min(3).max(255).required(),
     age: Joi.number().integer().min(4).max(130).required(),
-    isDeleted: Joi.boolean().required()
+    isDeleted: Joi.boolean()
 });
 
 export const userIdSchema = Joi.object({
