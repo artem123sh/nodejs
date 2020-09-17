@@ -25,12 +25,11 @@ export default class UsersController {
         }
     }
 
-
     createUser = async (req, res, next) => {
         try {
             const userDto = req.body;
             const user = await this.service.createUser(userDto);
-            return res.json(user);
+            return res.status(201).json(user);
         } catch (e) {
             return next(e);
         }
