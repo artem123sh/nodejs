@@ -15,11 +15,9 @@ export default class UsersService {
         return await this.repository.createUser(user);
     }
 
-
     updateUser = async (id, user) => {
         return await this.repository.updateUser(id, user);
     }
-
 
     deleteUser = async (id) => {
         return await this.repository.deleteUser(id);

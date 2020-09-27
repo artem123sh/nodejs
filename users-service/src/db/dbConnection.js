@@ -17,4 +17,4 @@ export const sequelize = new Sequelize(process.env.DATABASE_URL, { retry: {
     max: 10
 } });
 
-export const sync = async () =>  await sequelize.sync();
+export const sync = async () => await sequelize.sync();
