@@ -1,5 +1,5 @@
 import * as Joi from '@hapi/joi';
-import { GROUP_PERMISSIONS } from '../../utils/contants';
+import { GROUP_PERMISSIONS } from '../../utils/constants';
 
 export const groupSchema = Joi.object({
     name: Joi.string().alphanum().min(3).max(255).required(),

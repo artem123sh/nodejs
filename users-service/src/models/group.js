@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../db/dbConnection';
-import { GROUP_PERMISSIONS } from '../utils/contants';
+import { GROUP_PERMISSIONS } from '../utils/constants';
 
 /**
  * @swagger
