@@ -1,25 +1,37 @@
+import { logged, errorLogged } from '../utils/logged';
+
 export default class UsersService {
     constructor(repository) {
         this.repository = repository;
     }
 
-    getUser = async (id) => {
-        return await this.repository.getUser(id);
+    @logged
+    @errorLogged
+    getUser(id) {
+        return this.repository.getUser(id);
     }
 
-    getUsers = async (loginSubstring, limit) => {
-        return await this.repository.getUsers(loginSubstring, limit);
+    @logged
+    @errorLogged
+    getUsers(loginSubstring, limit) {
+        return this.repository.getUsers(loginSubstring, limit);
     }
 
-    createUser = async (user) => {
-        return await this.repository.createUser(user);
+    @logged
+    @errorLogged
+    createUser(user) {
+        return this.repository.createUser(user);
     }
 
-    updateUser = async (id, user) => {
-        return await this.repository.updateUser(id, user);
+    @logged
+    @errorLogged
+    updateUser(id, user) {
+        return this.repository.updateUser(id, user);
     }
 
-    deleteUser = async (id) => {
-        return await this.repository.deleteUser(id);
+    @logged
+    @errorLogged
+    deleteUser(id) {
+        return this.repository.deleteUser(id);
     }
 }

@@ -15,9 +15,18 @@ import GroupsService from './services/GroupsService';
 import GroupsMapper from './data-access/groups/GroupsMapper';
 import GroupsRepository from './data-access/groups/GroupsRepository';
 import { User, Group } from './models';
+import logger from './utils/logger';
+import requestLogger from './api/middlewares/requestLogger';
 
 class Server {
     constructor() {
+        process.on('uncaughtException', (err) =>  {
+            logger.error(err);
+            process.exit(1);
+        });
+        process.on('unhandledRejection', err => {
+            logger.error(err);
+        });
         this.app = express();
         this.config();
         this.routes();
@@ -44,6 +53,7 @@ class Server {
         };
         const swaggerSpec = swaggerJSDoc(options);
         this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+        this.app.use(requestLogger);
     }
 
     routes() {
@@ -60,7 +70,7 @@ class Server {
             await dbSync();
             this.app.listen(port, () => {
                 console.log(`\x1b[32mAPI is running at http://localhost:${port}`);
-                console.log(`\x1b[32mSwagger documentation: http://localhost:${port}/api-docs\x1b[0m`);
+                console.log(`Swagger documentation: http://localhost:${port}/api-docs\x1b[0m`);
             });
         })();
     }
