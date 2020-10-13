@@ -1,36 +1,36 @@
-import { logged, errorLogged } from '../utils/logged';
+import { debugLog, errorLog } from '../utils/logged';
 
 export default class UsersService {
     constructor(repository) {
         this.repository = repository;
     }
 
-    @logged
-    @errorLogged
+    @debugLog
+    @errorLog
     getUser(id) {
         return this.repository.getUser(id);
     }
 
-    @logged
-    @errorLogged
+    @debugLog
+    @errorLog
     getUsers(loginSubstring, limit) {
         return this.repository.getUsers(loginSubstring, limit);
     }
 
-    @logged
-    @errorLogged
+    @debugLog
+    @errorLog
     createUser(user) {
         return this.repository.createUser(user);
     }
 
-    @logged
-    @errorLogged
+    @debugLog
+    @errorLog
     updateUser(id, user) {
         return this.repository.updateUser(id, user);
     }
 
-    @logged
-    @errorLogged
+    @debugLog
+    @errorLog
     deleteUser(id) {
         return this.repository.deleteUser(id);
     }
