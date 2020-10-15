@@ -18,6 +18,7 @@ Add DATABASE_URL environment variable to the file, e.g.
 ```bash
 // .env file content
 DATABASE_URL=postgres://user:pass1@localhost:5432/users
+PORT=3000
 ```
 PORT is optional and equals 3000 by default.
 

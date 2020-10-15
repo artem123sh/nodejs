@@ -1,29 +1,43 @@
+import { debugLog, errorLog } from '../utils/logged';
+
 export default class GroupsService {
     constructor(repository) {
         this.repository = repository;
     }
 
-    getGroup = async (id) => {
+    @debugLog
+    @errorLog
+    async getGroup(id) {
         return await this.repository.getGroup(id);
     }
 
-    getGroups = async () => {
+    @debugLog
+    @errorLog
+    async getGroups() {
         return await this.repository.getGroups();
     }
 
-    createGroup = async (group) => {
+    @debugLog
+    @errorLog
+    async createGroup(group) {
         return await this.repository.createGroup(group);
     }
 
-    updateGroup = async (id, group) => {
+    @debugLog
+    @errorLog
+    async updateGroup(id, group) {
         return await this.repository.updateGroup(id, group);
     }
 
-    deleteGroup = async (id) => {
+    @debugLog
+    @errorLog
+    async deleteGroup(id) {
         return await this.repository.deleteGroup(id);
     }
 
-    addUsersToGroup = async (id, userIds) => {
+    @debugLog
+    @errorLog
+    async addUsersToGroup(id, userIds) {
         return await this.repository.addUsersToGroup(id, userIds);
     }
 }
