@@ -7,6 +7,22 @@ import { userSchema, userIdSchema, getUsersQueryParamsSchema } from '../validato
 * tags:
 *   name: Users Service
 */
+
+/**
+ * @swagger
+ *  components:
+ *    schemas:
+ *      User:
+ *        type: object
+ *        properties:
+ *          login:
+ *            type: string
+ *          password:
+ *            type: string
+ *          age:
+ *            type: number
+ */
+
 export default class UsersRoutes {
     constructor(validator, service) {
         this.controller = new UsersController(service);
@@ -21,6 +37,8 @@ export default class UsersRoutes {
             * @swagger
             * /users:
             *   get:
+            *     security:
+            *       - bearerAuth: []
             *     description: Returns list of existing users
             *     parameters:
             *       - in: query
@@ -44,6 +62,8 @@ export default class UsersRoutes {
             * @swagger
             * /users:
             *   post:
+            *     security:
+            *       - bearerAuth: []
             *     description: Creates a new user
             *     requestBody:
             *       required: true
@@ -66,6 +86,8 @@ export default class UsersRoutes {
             * @swagger
             * /users/{id}:
             *   get:
+            *     security:
+            *       - bearerAuth: []
             *     description: Returns a user with provided id
             *     parameters:
             *       - in: path
@@ -86,6 +108,8 @@ export default class UsersRoutes {
             * @swagger
             * /users/{id}:
             *   put:
+            *     security:
+            *       - bearerAuth: []
             *     description: Updates a user with provided id
             *     parameters:
             *       - in: path
@@ -112,6 +136,8 @@ export default class UsersRoutes {
             * @swagger
             * /users/{id}:
             *   delete:
+            *     security:
+            *       - bearerAuth: []
             *     description: Deletes a user with provided id
             *     parameters:
             *       - in: path
