@@ -20,4 +20,13 @@ export const sequelize = new Sequelize(process.env.DATABASE_URL, {
     logging: false
 });
 
-export const sync = async () => await sequelize.sync();
+export const sync = async () => {
+    await sequelize.sync();
+    // user for testing only as all endpoints require an authorized user, will be removed once task 6 is reviewed by an expert
+    await sequelize.models.User.findOrCreate({ where: {
+        login: 'user',
+        password: 'pass1',
+        isDeleted: false,
+        age: 4
+    } });
+};
