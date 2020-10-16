@@ -8,7 +8,6 @@ export default class RefreshTokenRepository {
     };
 
     createRefreshToken = async (refreshToken) => {
-        await this.model.destroy({ where: refreshToken });
         return await this.model.create(refreshToken);
     };
 }

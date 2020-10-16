@@ -6,5 +6,6 @@ export const loginSchema = Joi.object({
 });
 
 export const refreshTokenSchema = Joi.object({
-    refreshToken: Joi.string().required()
+    id: Joi.string().required().guid({ version : 'uuidv1' }).required(),
+    refreshToken: Joi.string().required().guid({ version : 'uuidv4' }).required()
 });

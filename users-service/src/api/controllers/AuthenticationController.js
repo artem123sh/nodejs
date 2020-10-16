@@ -19,8 +19,8 @@ export default class AuthenticationController {
 
     refreshToken = async (req, res, next) => {
         try {
-            const { refreshToken } = req.body;
-            const newAccessToken = await this.service.refreshAccessToken(refreshToken);
+            const { id, refreshToken } = req.body;
+            const newAccessToken = await this.service.refreshAccessToken(id, refreshToken);
             if (newAccessToken) {
                 res.header('Authorization', `Bearer ${newAccessToken}`);
                 return res.sendStatus(204);

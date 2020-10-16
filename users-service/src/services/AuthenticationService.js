@@ -1,13 +1,14 @@
 import { debugLog, errorLog } from '../utils/loggerDecorator';
 import jwt from 'jsonwebtoken';
+import util from 'util';
 
 export default class AuthenticationService {
-    constructor(userService, refreshTokenReposiory) {
+    constructor(userService, refreshTokenRepository) {
         this.userService = userService;
-        this.refreshTokenReposiory = refreshTokenReposiory;
+        this.refreshTokenRepository = refreshTokenRepository;
         this.secret = process.env.SECRET;
-        this.accessTokenExpiresIn = process.env.ACCESS_TOCKEN_EXPIRES_IN;
-        this.refreshTokenExpiresIn = process.env.REFRESH_TOCKEN_EXPIRES_IN;
+        this.accessTokenExpiresIn = process.env.ACCESS_TOKEN_EXPIRES_IN;
+        this.refreshTokenExpiresIn = process.env.REFRESH_TOKEN_EXPIRES_IN;
     }
 
     @debugLog(true)
@@ -17,49 +18,33 @@ export default class AuthenticationService {
         if (!id) {
             return null;
         }
-        const accessToken = await this.getToken({ sub: id });
-        const refreshTokenId = await this.refreshTokenReposiory.createRefreshToken({ UserId: id });
-        const refreshToken = await this.getRefreshToken({ sub: refreshTokenId.id, resourceId: id }, refreshTokenId.id);
-        return { accessToken, refreshToken };
+        const [accessToken, refreshToken] = await Promise.all([
+            this.sign({ sub: id }, this.secret, this.accessTokenExpiresIn),
+            this.refreshTokenRepository.createRefreshToken({ UserId: id })
+        ]);
+        return { accessToken, refreshToken: refreshToken.id };
     }
 
     @debugLog(true)
     @errorLog(true)
-    async refreshAccessToken(token) {
-        const decodedToken = jwt.decode(token);
-        try {
-            const { sub: refreshTokenId, resourceId: userId } = await this.verifyRefreshToken(token, decodedToken.sub);
-            const refreshToken = await this.refreshTokenReposiory.getRefreshToken(refreshTokenId);
-            if (refreshToken && refreshToken.UserId === userId) {
-                return await this.getToken({ sub: userId });
-            }
-            return null;
-        } catch (e) {
-            return null;
+    async refreshAccessToken(userId, refreshTokenId) {
+        const refreshToken = await this.refreshTokenRepository.getRefreshToken(refreshTokenId);
+        if ((refreshToken && refreshToken.UserId === userId)
+        && (refreshToken.createdAt && new Date(refreshToken.createdAt).valueOf() + +this.refreshTokenExpiresIn >= new Date().valueOf())) {
+            return await this.sign({ sub: userId });
         }
+        return null;
     }
 
     @debugLog(true)
     @errorLog(true)
-    async getToken(payload) {
-        return jwt.sign(payload, this.secret, { expiresIn: this.accessTokenExpiresIn });
+    async sign(payload) {
+        return util.promisify(jwt.sign, jwt)(payload, this.secret, { expiresIn: this.accessTokenExpiresIn });
     }
 
     @debugLog(true)
     @errorLog(true)
-    async getRefreshToken(payload, requestTokenId) {
-        return jwt.sign(payload, this.secret + requestTokenId, { expiresIn: this.refreshTokenExpiresIn });
-    }
-
-    @debugLog(true)
-    @errorLog(true)
-    async verifyAccessToken(token) {
-        return jwt.verify(token, this.secret);
-    }
-
-    @debugLog(true)
-    @errorLog(true)
-    async verifyRefreshToken(token, refreshTokenId) {
-        return jwt.verify(token, this.secret + refreshTokenId);
+    async verifyJwt(token) {
+        return util.promisify(jwt.verify, jwt)(token, this.secret);
     }
 }

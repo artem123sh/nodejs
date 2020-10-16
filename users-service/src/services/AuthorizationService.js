@@ -1,5 +1,6 @@
 import { debugLog, errorLog } from '../utils/loggerDecorator';
 import jwt from 'jsonwebtoken';
+import util from 'util';
 
 export default class AuthorizationService {
     constructor() {
@@ -9,6 +10,6 @@ export default class AuthorizationService {
     @debugLog(true)
     @errorLog(true)
     async verifyAccessToken(token) {
-        return jwt.verify(token, this.secret);
+        return util.promisify(jwt.verify, jwt)(token, this.secret);
     }
 }
