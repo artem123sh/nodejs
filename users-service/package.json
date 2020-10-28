@@ -6,7 +6,7 @@
   "scripts": {
     "startProd": "node --exec babel-node ./src/index.js",
     "start": "nodemon --exec babel-node ./src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest -u",
     "eslint": "eslint */**/*.{js} --quiet --fix"
   },
   "keywords": [],
@@ -36,8 +36,10 @@
     "@babel/plugin-proposal-decorators": "^7.10.5",
     "@babel/preset-env": "^7.11.0",
     "babel-eslint": "^10.1.0",
+    "babel-jest": "^26.6.1",
     "dotenv": "^8.2.0",
     "eslint": "^7.7.0",
+    "jest": "^26.6.1",
     "nodemon": "^2.0.4"
   }
 }
