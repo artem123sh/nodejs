@@ -6,6 +6,11 @@ export default class UsersRepository {
         this.dataMapper = dataMapper;
     }
 
+    getUserIdByCredentials = async (login, password) => {
+        const user = await this.model.findOne({ where: { login, password, isDeleted: false } });
+        return user ? this.dataMapper.toDomain(user).id : null;
+    };
+
     getUser = async (id) => {
         const user = await this.model.findByPk(id);
         return user && !user.isDeleted ? this.dataMapper.toDomain(user) : null;

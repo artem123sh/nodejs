@@ -7,6 +7,33 @@ import { groupSchema, groupIdSchema, groupUsersSchema } from '../validators/grou
 * tags:
 *   name: Groups Service
 */
+
+/**
+ * @swagger
+ *  components:
+ *    schemas:
+ *      Group:
+ *        type: object
+ *        properties:
+ *          name:
+ *            type: string
+ *          permissions:
+ *            type: string
+ */
+
+/**
+ * @swagger
+ *  components:
+ *    schemas:
+ *      GroupUsers:
+ *        type: object
+ *        properties:
+ *          userIds:
+ *            type: array
+ *            items:
+ *              type: string
+ */
+
 export default class GroupsRoutes {
     constructor(validator, service) {
         this.controller = new GroupsController(service);
@@ -21,6 +48,8 @@ export default class GroupsRoutes {
             * @swagger
             * /groups:
             *   get:
+            *     security:
+            *       - bearerAuth: []
             *     description: Returns list of existing groups
             *     tags:
             *       - Groups Service
@@ -35,6 +64,8 @@ export default class GroupsRoutes {
             * @swagger
             * /groups:
             *   post:
+            *     security:
+            *       - bearerAuth: []
             *     description: Creates a new group
             *     requestBody:
             *       required: true
@@ -57,6 +88,8 @@ export default class GroupsRoutes {
             * @swagger
             * /groups/{id}:
             *   get:
+            *     security:
+            *       - bearerAuth: []
             *     description: Returns a group with provided id
             *     parameters:
             *       - in: path
@@ -77,6 +110,8 @@ export default class GroupsRoutes {
             * @swagger
             * /groups/{id}:
             *   put:
+            *     security:
+            *       - bearerAuth: []
             *     description: Updates a group with provided id
             *     parameters:
             *       - in: path
@@ -103,6 +138,8 @@ export default class GroupsRoutes {
             * @swagger
             * /groups/{id}:
             *   delete:
+            *     security:
+            *       - bearerAuth: []
             *     description: Deletes a group with provided id
             *     parameters:
             *       - in: path
@@ -123,6 +160,8 @@ export default class GroupsRoutes {
             * @swagger
             * /groups/{id}/addUsers:
             *   post:
+            *     security:
+            *       - bearerAuth: []
             *     description: Deletes a group with provided id
             *     parameters:
             *       - in: path

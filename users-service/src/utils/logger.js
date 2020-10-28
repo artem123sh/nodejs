@@ -4,7 +4,7 @@ export default createLogger({
     level: 'info',
     transports: [
         new transports.Console({
-            level: 'info',
+            level: process.env.LOG_LEVEL || 'info',
             format: format.combine(
                 format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
                 format.colorize(),

@@ -1,6 +1,7 @@
 import { createValidator } from 'express-joi-validation';
 import express from 'express';
 import compression from 'compression';
+import cors from 'cors';
 import 'dotenv/config';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
@@ -14,9 +15,14 @@ import GroupsRoutes from './api/routes/GroupsRoutes';
 import GroupsService from './services/GroupsService';
 import GroupsMapper from './data-access/groups/GroupsMapper';
 import GroupsRepository from './data-access/groups/GroupsRepository';
-import { User, Group } from './models';
+import { User, Group, RefreshToken } from './models';
 import logger from './utils/logger';
 import requestLogger from './api/middlewares/requestLogger';
+import AuthenticationRoutes from './api/routes/AuthenticationRoutes';
+import AuthenticationService from './services/AuthenticationService';
+import AuthorizationService from './services/AuthorizationService';
+import verifyTokenWith from './api/middlewares/authorization';
+import RefreshTokenRepository from './data-access/refreshTokens/RefreshTokenRepository';
 
 class Server {
     constructor() {
@@ -31,9 +37,11 @@ class Server {
         this.config();
         this.routes();
         this.app.use(errorFormatter);
+        this.app.disable('x-powered-by');
     }
 
     config() {
+        this.app.use(cors({ origin: process.env.ORIGIN }));
         this.app.set('port', Number(process.env.PORT) || 3000);
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: false }));
@@ -59,18 +67,22 @@ class Server {
     routes() {
         const validator = this.app.get('validator');
         const usersService = new UsersService(new UsersRepository(User, new UsersMapper()));
-        this.app.use('/users', new UsersRoutes(validator, usersService).router);
+        const authenticationService = new AuthenticationService(usersService, new RefreshTokenRepository(RefreshToken));
+        const authorizationService = new AuthorizationService();
+        this.app.use('/users', verifyTokenWith(authorizationService), new UsersRoutes(validator, usersService).router);
         const groupsService = new GroupsService(new GroupsRepository(Group, new GroupsMapper()));
-        this.app.use('/groups', new GroupsRoutes(validator, groupsService).router);
+        this.app.use('/groups', verifyTokenWith(authorizationService), new GroupsRoutes(validator, groupsService).router);
+        this.app.use('/auth', new AuthenticationRoutes(validator, authenticationService).router);
     }
 
     start() {
         const port = this.app.get('port');
         (async () => {
+            logger.info('Synchronizing Database schemas...');
             await dbSync();
             this.app.listen(port, () => {
-                console.log(`\x1b[32mAPI is running at http://localhost:${port}`);
-                console.log(`Swagger documentation: http://localhost:${port}/api-docs\x1b[0m`);
+                logger.info(`API is running at http://localhost:${port}`);
+                logger.info(`Swagger documentation: http://localhost:${port}/api-docs`);
             });
         })();
     }

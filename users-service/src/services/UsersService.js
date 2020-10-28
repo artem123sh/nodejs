@@ -1,36 +1,42 @@
-import { debugLog, errorLog } from '../utils/logged';
+import { debugLog, errorLog } from '../utils/loggerDecorator';
 
 export default class UsersService {
     constructor(repository) {
         this.repository = repository;
     }
 
-    @debugLog
-    @errorLog
+    @debugLog(true)
+    @errorLog(true)
+    getUserIdByCredentials(login, password) {
+        return this.repository.getUserIdByCredentials(login, password);
+    }
+
+    @debugLog()
+    @errorLog()
     getUser(id) {
         return this.repository.getUser(id);
     }
 
-    @debugLog
-    @errorLog
+    @debugLog()
+    @errorLog()
     getUsers(loginSubstring, limit) {
         return this.repository.getUsers(loginSubstring, limit);
     }
 
-    @debugLog
-    @errorLog
+    @debugLog()
+    @errorLog()
     createUser(user) {
         return this.repository.createUser(user);
     }
 
-    @debugLog
-    @errorLog
+    @debugLog()
+    @errorLog()
     updateUser(id, user) {
         return this.repository.updateUser(id, user);
     }
 
-    @debugLog
-    @errorLog
+    @debugLog()
+    @errorLog()
     deleteUser(id) {
         return this.repository.deleteUser(id);
     }
